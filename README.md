@@ -1,9 +1,10 @@
 # No Phishing: Detecting Malicious URLs
-#### DSBA 6211 - Summer 2024 - Neal Logan
 
 ### Overview
 
 This project covers the development of phishing URL detection models.  Given a set of features extracted from the URLs themselves, generated from the corresponding sites, or obtained from third parties, these models predict whether the URL in question is legitimate or used for phishing. 
+
+It began as a [project](https://github.com/neal-logan/dsba6211-summer2024/tree/main/nophishing) at UNC Charlotte (in Advanced Business Analytics, a fantastic class taught by [Ryan Wesslen](https://github.com/wesslen)) which I attended in Summer 2024.
 
 ### Table of Contents
 
@@ -19,7 +20,7 @@ This project covers the development of phishing URL detection models.  Given a s
 
 ### Reproducing Results
 
-The results can be reproduced by simply running the Colab notebook [02 Modeling](https://github.com/neal-logan/dsba6211-summer2024/blob/main/nophishing/02_modeling.ipynb).  This notebook will install and import the necessary packages of the correct versions, load and transform the [data](https://github.com/neal-logan/dsba6211-summer2024/tree/main/nophishing/data), run and evaluate the models, and finally explain key features of the models and the data itself.  The random seed is embedded in the notebook and used wherever necessary to obtain consistent results.
+The results can be reproduced by simply running the Colab notebook [02 Modeling](https://github.com/neal-logan/dsba6211-summer2024/blob/main/nophishing/02_modeling.ipynb).  This notebook will install and import the necessary packages of the correct versions, load and transform the [data](https://github.com/neal-logan/dsba6211-summer2024/tree/main/nophishing/data), run and evaluate the models, and finally explain key features of the models and the data itself.  The random seed is embedded in the notebook and provided to processes wherever necessary to obtain consistent results.
 
 ## Introduction
 
@@ -29,23 +30,20 @@ Malicious URL detection can be used in several ways.  It can be used to provide 
 
 ## Literature Review
 
+####
+
+
 #### [Phishing URL Detection](https://github.com/pirocheto/phishing-url-detection) by Pirocheto
 
 This repository contains a complete project for phishing URL detection using machine learning and MLOps practices. It uses a TF-IDF vectorizer using both character and word n-grams) with a linear SVM model. The code is designed to be lightweight and fast, suitable for embedding in applications, and can work offline, without an internet connection. The repository also includes instructions for reproducing the model and running the pipeline.
-
-This project is relevant both for the subject matter and because of its relation to the dataset I'm using.
 
 #### [PhishShield](https://github.com/praneeth-katuri/PhishShield) by Praneeth Katuri
 
 This GitHub repository provides a comprehensive solution for detecting phishing websites using analytical models and custom transformers for preprocessing. It includes feature-based and text-based models, including random forest, LGBM, SVC, logistic regression, and Multinomial Naive Bayes, and takes advantage of grid-search with cross-validation. The repository also offers Flask deployment for real-time URL prediction and caching for performance improvement.
 
-This project is relevant because it explores and compares a variety of techniques for detecting malicious URLs.
-
 #### [Phishing Link Detection](https://github.com/Sayan-Maity-Code/Phishing-link-detection) by Sayan Maity
 
 This project uses Multinomial Naive Bayes and Logistic Regression to detect malicious URLs. The model's preprocessing involves tokenization and TF-IDF vectorization. The project includes scripts for training and evaluating the model.
-
-This project is relevant mainly in that it provides an additional perspective on the topic.
 
 ## Dataset
 
@@ -67,14 +65,17 @@ In **Modeling**:
 
 **Probably a pretty good model**: The final model's ROC-AUC, precision, and recall are all about 0.96.
 
-**However**:
-* The final model has not been assessed for overfitting, weakspots, or resilience
-* PiML's ROC-AUC seemed to disagree substantially on models that should have been identical 
-* Regularization was not applied
-* No cross-validation was used to optimize parameters
+**However, it's nowhere near ready for production**:
+* The data more or less makes sense based on my experience, but I've done no verification of the data quality, and in particular haven't done anything to verify that it is related to any real-world data
+* The final model has not been assessed for overfitting, weakspots, or resilience, although there's little reason to expect these concerns to differ from the exploratory models
+* The model is heavily reliant on a few external services
+* PiML's ROC-AUC seemed to disagree substantially with sklearn's ROC-AUC calcuation on models that were probably identical; I reported the more-realistic 0.96 value from sklearn rather than the 0.99 calculated by PiML. 
+* Regularization was not applied, although since the included parameters are limited this may not be much of a problem
+* No cross-validation/hyperparameter search was used to optimize parameters
 * There's no consideration for exporting models
-* There's probably room for more feature engineering
+* There's probably room for some feature engineering
+
 
 ## Some Lessons Learned
 * **Use PiML early and often**, particularly in **early** exploratory data analysis. I intended to use PiML extensively in EDA, but only for things that I didn't end up getting to. In fact, it would have produced better results faster for many of the analyses I did complete in this section.
-* **Don't use Colab** (or any web-based notebook.) While it's convenient for quick notebooks, efforts of even this relatively small scale can benefit from more control over the environment, more (and more consistent) compute power, and less connection instability.
+* **Don't use Colab** (or any web-based notebook) for processes that take more than a couple of minutes.  While Colab is convenient for quick notebooks, efforts of even this fairly scale can benefit from more control over the environment, more (and more consistent) compute power, and most importantly less disruption from connection instability.
